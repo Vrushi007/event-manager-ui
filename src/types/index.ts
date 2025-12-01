@@ -1,7 +1,13 @@
 export interface User {
   id: number;
+  username: string;
   email: string;
-  full_name: string;
+  first_name: string;
+  last_name: string;
+  college_id: number;
+  roll_number: string;
+  branch: string;
+  year: number;
   is_admin: boolean;
 }
 
@@ -32,9 +38,15 @@ export interface LoginRequest {
 }
 
 export interface SignupRequest {
+  username: string;
   email: string;
-  full_name: string;
   password: string;
+  first_name: string;
+  last_name: string;
+  college_id: number;
+  roll_number: string;
+  branch: string;
+  year: number;
   is_admin?: boolean;
 }
 
@@ -50,4 +62,26 @@ export interface EventFormData {
   start_time: string;
   end_time: string;
   capacity: number;
+}
+
+export interface College {
+  id: number;
+  name: string;
+  code: string;
+  city: string;
+  contact_email: string;
+  contact_phone: string;
+  website?: string;
+  is_active: boolean;
+  created_at?: string;
+}
+
+export interface CollegeFormData {
+  name: string;
+  code: string;
+  city: string;
+  contact_email: string;
+  contact_phone: string;
+  website?: string;
+  is_active: boolean;
 }

@@ -54,6 +54,7 @@ const Navbar: React.FC = () => {
     ? [
         { label: "Events", path: "/events" },
         { label: "My Registrations", path: "/my-registrations" },
+        ...(isAdmin ? [{ label: "Colleges", path: "/colleges" }] : []),
       ]
     : [];
 
@@ -162,8 +163,9 @@ const Navbar: React.FC = () => {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt={user?.full_name || user?.email}>
-                    {user?.full_name?.charAt(0).toUpperCase() ||
+                  <Avatar alt={user?.username || user?.email}>
+                    {user?.first_name?.charAt(0).toUpperCase() ||
+                      user?.username?.charAt(0).toUpperCase() ||
                       user?.email?.charAt(0).toUpperCase()}
                   </Avatar>
                 </IconButton>
@@ -186,7 +188,7 @@ const Navbar: React.FC = () => {
               >
                 <MenuItem disabled>
                   <Typography textAlign="center">
-                    {user?.email} {isAdmin && "(Admin)"}
+                    {user?.username || user?.email} {isAdmin && "(Admin)"}
                   </Typography>
                 </MenuItem>
                 <MenuItem onClick={handleLogout}>

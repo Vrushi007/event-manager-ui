@@ -15,6 +15,7 @@ import Signup from "./pages/Signup";
 import EventList from "./pages/EventList";
 import EventDetails from "./pages/EventDetails";
 import MyRegistrations from "./pages/MyRegistrations";
+import Colleges from "./pages/Colleges";
 
 const theme = createTheme({
   palette: {
@@ -59,6 +60,14 @@ function App() {
               element={
                 <PrivateRoute>
                   <MyRegistrations />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/colleges"
+              element={
+                <PrivateRoute adminOnly>
+                  <Colleges />
                 </PrivateRoute>
               }
             />

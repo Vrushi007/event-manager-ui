@@ -289,7 +289,7 @@ const EventDetails: React.FC = () => {
               {registrations.map((reg) => (
                 <ListItem key={reg.id}>
                   <ListItemText
-                    primary={reg.user?.full_name || reg.user?.email}
+                    primary={reg.user?.first_name || reg.user?.email}
                     secondary={`Registered at: ${new Date(
                       reg.registered_at
                     ).toLocaleString()}`}

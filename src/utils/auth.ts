@@ -3,6 +3,14 @@ import { User } from "../types";
 
 interface DecodedToken {
   sub: string;
+  username?: string;
+  email?: string;
+  first_name?: string;
+  last_name?: string;
+  college_id?: number;
+  roll_number?: string;
+  branch?: string;
+  year?: number;
   is_admin: boolean;
   exp: number;
 }
