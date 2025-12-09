@@ -20,11 +20,13 @@ import EventIcon from "@mui/icons-material/Event";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PeopleIcon from "@mui/icons-material/People";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import { useParams, useNavigate } from "react-router-dom";
 import { Event, Registration } from "../types";
 import { eventService } from "../services/eventService";
 import { registrationService } from "../services/registrationService";
 import { useAuth } from "../context/AuthContext";
+import CreateEventModal from "../components/CreateEventModal";
 
 const EventDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -37,6 +39,8 @@ const EventDetails: React.FC = () => {
   const [success, setSuccess] = useState("");
   const [isRegistered, setIsRegistered] = useState(false);
   const [showRegistrations, setShowRegistrations] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [eventToEdit, setEventToEdit] = useState<Event | null>(null);
 
   const fetchEventDetails = async () => {
     if (!id) return;
@@ -161,14 +165,27 @@ const EventDetails: React.FC = () => {
             {event.title}
           </Typography>
           {isAdmin && (
-            <Button
-              variant="outlined"
-              color="error"
-              startIcon={<DeleteIcon />}
-              onClick={handleDeleteEvent}
-            >
-              Delete Event
-            </Button>
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <Button
+                variant="outlined"
+                color="error"
+                startIcon={<DeleteIcon />}
+                onClick={handleDeleteEvent}
+              >
+                Delete Event
+              </Button>
+              <Button
+                variant="outlined"
+                color="primary"
+                startIcon={<EditIcon />}
+                onClick={() => {
+                  setEventToEdit(event);
+                  setEditModalOpen(true);
+                }}
+              >
+                Edit Event
+              </Button>
+            </Box>
           )}
         </Box>
 
@@ -273,6 +290,28 @@ const EventDetails: React.FC = () => {
           </Button>
         </Box>
       </Paper>
+
+      <CreateEventModal
+        open={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        eventToEdit={
+          event
+            ? {
+                id: event.id,
+                title: event.title,
+                description: event.description,
+                venue: event.venue,
+                start_time: event.start_time,
+                end_time: event.end_time,
+                capacity: event.capacity,
+              }
+            : null
+        }
+        onEventUpdated={async () => {
+          setEditModalOpen(false);
+          await fetchEventDetails();
+        }}
+      />
 
       <Dialog
         open={showRegistrations}

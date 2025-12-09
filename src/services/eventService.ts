@@ -17,6 +17,11 @@ export const eventService = {
     return response.data;
   },
 
+  async updateEvent(id: number, data: EventFormData): Promise<Event> {
+    const response = await axiosInstance.put<Event>(`/api/events/${id}`, data);
+    return response.data;
+  },
+
   async deleteEvent(id: number): Promise<void> {
     await axiosInstance.delete(`/api/events/${id}`);
   },

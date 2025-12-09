@@ -15,13 +15,25 @@ import { EventFormData } from "../types";
 interface CreateEventModalProps {
   open: boolean;
   onClose: () => void;
-  onEventCreated: () => void;
+  onEventCreated?: () => void;
+  onEventUpdated?: () => void;
+  eventToEdit?: {
+    id: number;
+    title: string;
+    description: string;
+    venue: string;
+    start_time: string;
+    end_time: string;
+    capacity: number;
+  } | null;
 }
 
 const CreateEventModal: React.FC<CreateEventModalProps> = ({
   open,
   onClose,
   onEventCreated,
+  onEventUpdated,
+  eventToEdit = null,
 }) => {
   const [formData, setFormData] = useState<EventFormData>({
     title: "",
@@ -49,16 +61,21 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
     setError("");
 
     try {
-      await eventService.createEvent(formData);
-      setFormData({
-        title: "",
-        description: "",
-        venue: "",
-        start_time: "",
-        end_time: "",
-        capacity: 0,
-      });
-      onEventCreated();
+      if (eventToEdit) {
+        await eventService.updateEvent(eventToEdit.id, formData);
+        if (onEventUpdated) onEventUpdated();
+      } else {
+        await eventService.createEvent(formData);
+        setFormData({
+          title: "",
+          description: "",
+          venue: "",
+          start_time: "",
+          end_time: "",
+          capacity: 0,
+        });
+        if (onEventCreated) onEventCreated();
+      }
     } catch (err: any) {
       setError(err.response?.data?.detail || "Failed to create event");
     } finally {
@@ -79,9 +96,22 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
     onClose();
   };
 
+  React.useEffect(() => {
+    if (eventToEdit) {
+      setFormData({
+        title: eventToEdit.title,
+        description: eventToEdit.description,
+        venue: eventToEdit.venue,
+        start_time: eventToEdit.start_time,
+        end_time: eventToEdit.end_time,
+        capacity: eventToEdit.capacity,
+      });
+    }
+  }, [eventToEdit]);
+
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Create New Event</DialogTitle>
+      <DialogTitle>{eventToEdit ? "Edit Event" : "Create New Event"}</DialogTitle>
       <Box component="form" onSubmit={handleSubmit}>
         <DialogContent>
           {error && (
@@ -156,7 +186,7 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
             Cancel
           </Button>
           <Button type="submit" variant="contained" disabled={loading}>
-            {loading ? "Creating..." : "Create Event"}
+            {loading ? (eventToEdit ? "Saving..." : "Creating...") : eventToEdit ? "Save Changes" : "Create Event"}
           </Button>
         </DialogActions>
       </Box>
